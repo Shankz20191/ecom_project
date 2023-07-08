@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { loadStripe } from "@stripe/stripe-js";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { loadStripe } from '@stripe/stripe-js';
 import {
   CardElement,
   useStripe,
   Elements,
   useElements,
-} from "@stripe/react-stripe-js";
-import axios from "axios";
-import { useCartContext } from "../context/cart_context";
-import { useUserContext } from "../context/user_context";
-import { formatPrice } from "../utils/helpers";
-import { useNavigate } from "react-router-dom";
+} from '@stripe/react-stripe-js';
+import axios from 'axios';
+import { useCartContext } from '../context/cart_context';
+import { useUserContext } from '../context/user_context';
+import { formatPrice } from '../utils/helpers';
+import { useNavigate } from 'react-router-dom';
 
-const promise = loadStripe(process.env.REACT_APP_PUBLIC_KEY);
+const promise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 const CheckoutForm = () => {
   const { cart, total_amount, shipping_fee, clearCart } = useCartContext();
@@ -22,26 +22,26 @@ const CheckoutForm = () => {
 
   const [succeeded, setSucceeded] = useState(false);
   const [error, setError] = useState(null);
-  const [processing, setProcessing] = useState("");
+  const [processing, setProcessing] = useState('');
   const [disabled, setDisabled] = useState(true);
-  const [clientSecret, setClientSecret] = useState("");
+  const [clientSecret, setClientSecret] = useState('');
   const stripe = useStripe();
   const elements = useElements();
 
   const cardStyle = {
     style: {
       base: {
-        color: "#32325d",
-        fontFamily: "Arial, sans-serif",
-        fontSmoothing: "antialiased",
-        fontSize: "16px",
-        "::placeholder": {
-          color: "#32325d",
+        color: '#32325d',
+        fontFamily: 'Arial, sans-serif',
+        fontSmoothing: 'antialiased',
+        fontSize: '16px',
+        '::placeholder': {
+          color: '#32325d',
         },
       },
       invalid: {
-        color: "#fa755a",
-        iconColor: "#fa755a",
+        color: '#fa755a',
+        iconColor: '#fa755a',
       },
     },
   };
@@ -49,13 +49,11 @@ const CheckoutForm = () => {
   const createPaymentIntent = async () => {
     try {
       const { data } = await axios.post(
-        "./netlify/functions/create-payment-intent",
+        './.netlify/functions/create-payment-intent',
         JSON.stringify({ cart, shipping_fee, total_amount })
       );
       setClientSecret(data.clientSecret);
-    } catch (error) {
-      console.log(error.response);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -64,7 +62,7 @@ const CheckoutForm = () => {
 
   const handleChange = async (event) => {
     setDisabled(event.empty);
-    setError(event.error ? event.error.message : "");
+    setError(event.error ? event.error.message : '');
   };
 
   const handleSubmit = async (ev) => {
@@ -86,7 +84,7 @@ const CheckoutForm = () => {
       setSucceeded(true);
       setTimeout(() => {
         clearCart();
-        navigate("/");
+        navigate('/');
       }, 5000);
     }
   };
@@ -114,7 +112,7 @@ const CheckoutForm = () => {
         />
         <button disabled={disabled || succeeded || processing} id="submit">
           <span id="button-text">
-            {processing ? <div id="spinner" className="spinner"></div> : "Pay"}
+            {processing ? <div id="spinner" className="spinner"></div> : 'Pay'}
           </span>
         </button>
 
@@ -124,8 +122,8 @@ const CheckoutForm = () => {
           </div>
         )}
 
-        <p className={succeeded ? "result-message" : "result-message hidden"}>
-          Payment Succeeded, see the result in your{" "}
+        <p className={succeeded ? 'result-message' : 'result-message hidden'}>
+          Payment Succeeded, see the result in your{' '}
           <a href="https://dashboard.stripe.com/test/payments">
             Stripe Dashboard.
           </a>
@@ -243,7 +241,7 @@ const Wrapper = styled.section`
   .spinner:before,
   .spinner:after {
     position: absolute;
-    content: "";
+    content: '';
   }
   .spinner:before {
     width: 10.4px;
